@@ -16,4 +16,4 @@ This project is guided by three core beliefs. Everything we build must align wit
 3. **Frictionless for Teachers.** The experience should be seamless.  It needs to just work with no logins or complex setup.
 
 ## Project Status & Technical Details
-This repository contains the full source code and planning documents for the extension. For a detailed breakdown of the technical architecture, feature set, and phased rollout plan, please see our [Technical Plan](requirements/technical-plan.md).
+This repository contains the full source code and planning documents for the extension. For a detailed breakdown of the technical architecture, feature set, and implementation details, please see our [Technical Plan](requirements/technical-plan.md).

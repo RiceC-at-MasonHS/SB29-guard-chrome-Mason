@@ -20,13 +20,14 @@ async function build() {
     // 1. Load secrets from config.js
     if (!fs.existsSync(configPath)) {
         console.error(`🔴 Error: Configuration file not found at ${configPath}`);
+        console.error(`   - Please create a 'config.js' file based on 'example_config.js'`);
         process.exit(1);
     }
     const config = await import(configPath);
-    const { API_KEY, API_URI, API_HOST } = config.default;
+    const { OAUTH2_CLIENT_ID, API_KEY, API_URI, API_HOST } = config.default;
 
-    if (!API_KEY || !API_URI || !API_HOST) {
-        console.error('🔴 Error: Required API values are missing from config.js.');
+    if (!OAUTH2_CLIENT_ID || !API_KEY || !API_URI || !API_HOST) {
+        console.error('🔴 Error: Required values (OAUTH2_CLIENT_ID, API_KEY, API_URI, API_HOST) are missing from config.js.');
         process.exit(1);
     }
 
@@ -43,21 +44,14 @@ async function build() {
     }
     let manifestContent = fs.readFileSync(manifestTemplatePath, 'utf8');
 
-    // --- DIAGNOSTIC LOGGING ---
-    console.log('   - Values being used for manifest replacement:');
-    console.log(`     - Name:        ${packageJson.displayName}`);
-    console.log(`     - Version:     ${packageJson.version}`);
-    console.log(`     - Description: ${packageJson.description}`);
-    // --- END DIAGNOSTIC LOGGING ---
-
     // Replace metadata from package.json
     manifestContent = manifestContent.replace(/<% name %>/g, packageJson.displayName);
     manifestContent = manifestContent.replace(/<% version %>/g, packageJson.version);
     manifestContent = manifestContent.replace(/<% description %>/g, packageJson.description);
 
     // Replace secrets from config.js
-    const manifestHostPattern = `${API_HOST}/*`;
-    manifestContent = manifestContent.replace(/__API_HOST_PLACEHOLDER__/g, manifestHostPattern);
+    manifestContent = manifestContent.replace(/__API_HOST_PLACEHOLDER__/g, `${API_HOST}/*`);
+    manifestContent = manifestContent.replace(/__OAUTH2_CLIENT_ID_PLACEHOLDER__/g, OAUTH2_CLIENT_ID);
     
     fs.writeFileSync(path.join(buildDir, 'manifest.json'), manifestContent);
 

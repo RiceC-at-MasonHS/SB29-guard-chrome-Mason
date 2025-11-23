@@ -38,7 +38,7 @@
 <body>
     <div class="container">
         <h1>Privacy Policy for the "SB29-guard-chrome" Extension</h1>
-        <p class="last-updated">Last Updated: September 27, 2025</p>
+        <p class="last-updated">Last Updated: November 22, 2025</p>
 
         <h2>Our Commitment to Privacy</h2>
         <p>
@@ -47,11 +47,14 @@
 
         <h2>How It Works</h2>
         <p>
-            To protect your privacy, the extension is designed to perform all of its checks locally on your computer. The process is as follows:
+            To protect your privacy while providing up-to-date information, the extension follows a secure process:
         </p>
         <ol>
             <li>
-                <strong>Fetching the Master List:</strong> Periodically (approximately once per day), the extension anonymously downloads an official list of websites and their data privacy agreement (DPA) statuses from a secure, district-managed server. This is the only network communication the extension performs.
+                <strong>One-Time Authentication:</strong> To securely connect to the district's data source (Supabase), the extension uses the native Chrome Identity API. It authenticates you based on your existing Google Workspace account that is logged into the browser. This process verifies you are an authorized teacher without requiring you to enter a password and without sharing your personal data with the extension.
+            </li>
+            <li>
+                <strong>Fetching the Master List:</strong> Once authenticated, the extension periodically (approximately once per day) downloads the official list of websites and their data privacy agreement (DPA) statuses from the secure, district-managed Supabase database.
             </li>
             <li>
                 <strong>Local Storage:</strong> This list is stored locally within the extension on your computer.

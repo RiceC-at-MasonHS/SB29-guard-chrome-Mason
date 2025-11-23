@@ -12,6 +12,14 @@
   "host_permissions": [
     "__API_HOST_PLACEHOLDER__"
   ],
+  "oauth2": {
+    "client_id": "__OAUTH2_CLIENT_ID_PLACEHOLDER__",
+    "scopes": [
+      "openid",
+      "email",
+      "profile"
+    ]
+  },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {

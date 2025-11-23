@@ -1,9 +1,39 @@
 // --- Constants and Configuration ---
+const USER_AGENT = 'SB29-guard-chrome';
 // This placeholder will be replaced by your build script
 const API_URL = '__API_URI_PLACEHOLDER__';
 // This placeholder will be replaced by your build script
 const API_KEY = '__API_KEY_PLACEHOLDER__';
 const CACHE_DURATION_MINUTES = 60 * 24; // Cache data for 24 hours
+
+/**
+ * A wrapper to ensure chrome extension APIs are not called during tests.
+ * In a test environment, it will simply execute the fallback.
+ * @param {Function} callback - The function to run in the extension context.
+ * @param {*} fallback - The value to return in a non-extension context.
+ */
+function runInExtensionContext(callback, fallback) {
+    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id) {
+        return callback();
+    }
+    return fallback;
+}
+
+/**
+ * Extracts the base URL (origin) from a full Supabase API URL.
+ * @param {string} fullUrl - The full API URL.
+ * @returns {string} The base URL.
+ */
+function getSupabaseBaseUrl(fullUrl) {
+    try {
+        const url = new URL(fullUrl);
+        return url.origin;
+    } catch (e) {
+        // Fallback for placeholder or invalid URL
+        return 'https://<YOUR_PROJECT_ID>.supabase.co';
+    }
+}
+
 
 /**
  * Authenticates the user with Supabase via Google OAuth.
@@ -198,7 +228,10 @@ async function fetchDpaData() {
  */
 async function getAndUpdateDpaList() {
     const now = new Date().getTime();
-    const result = await chrome.storage.local.get(['dpaList', 'lastFetch']);
+    const result = await runInExtensionContext(
+        () => chrome.storage.local.get(['dpaList', 'lastFetch']),
+        { dpaList: null, lastFetch: null }
+    );
 
     if (result.dpaList && result.lastFetch && (now - result.lastFetch < CACHE_DURATION_MINUTES * 60 * 1000)) {
         console.log('Using cached DPA list.');
@@ -208,7 +241,10 @@ async function getAndUpdateDpaList() {
     console.log('Cache stale or missing. Fetching new DPA list.');
     const dpaList = await fetchDpaData();
     if (dpaList) {
-        await chrome.storage.local.set({ dpaList: dpaList, lastFetch: now });
+        await runInExtensionContext(
+            () => chrome.storage.local.set({ dpaList: dpaList, lastFetch: now }),
+            Promise.resolve()
+        );
         return dpaList;
     }
     return result.dpaList || null;
@@ -223,6 +259,8 @@ async function getAndUpdateDpaList() {
  * @returns {string} The simplified status key (e.g., 'approved', 'denied', 'staff_only').
  */
 function determineOverallStatus(siteInfo) {
+    if (!siteInfo) return 'unlisted';
+
     const { current_tl_status, current_dpa_status } = siteInfo;
 
     // Denied takes precedence
@@ -240,7 +278,7 @@ function determineOverallStatus(siteInfo) {
     if (isApproved && isReceived) {
         return 'approved';
     }
-
+    
     // All other cases are considered pending
     return 'pending';
 }
@@ -252,23 +290,25 @@ function determineOverallStatus(siteInfo) {
  * @param {boolean} isInstalled - A flag to indicate if this is an installed app
  */
 function updateIcon(status, tabId, isInstalled) {
-    let iconPath = '';
-    switch (status) {
-        case 'approved':   iconPath = "images/icon-green-circle.png"; break;
-        case 'denied':     iconPath = "images/icon-red-x.png"; break;
-        case 'staff_only': iconPath = "images/icon-yellow-triangle.png"; break;
-        case 'pending':    iconPath = "images/icon-orange-square.png"; break;
-        case 'unlisted':   iconPath = "images/icon-purple-diamond.png"; break;
-        default:           iconPath = "images/icon-neutral48.png"; break;
-    }
-    chrome.action.setIcon({ path: { "48": iconPath }, tabId: tabId });
+    runInExtensionContext(() => {
+        let iconPath = '';
+        switch (status) {
+            case 'approved':   iconPath = "images/icon-green-circle.png"; break;
+            case 'denied':     iconPath = "images/icon-red-x.png"; break;
+            case 'staff_only': iconPath = "images/icon-yellow-triangle.png"; break;
+            case 'pending':    iconPath = "images/icon-orange-square.png"; break;
+            case 'unlisted':   iconPath = "images/icon-purple-diamond.png"; break;
+            default:           iconPath = "images/icon-neutral48.png"; break;
+        }
+        chrome.action.setIcon({ path: { "48": iconPath }, tabId: tabId });
 
-    if (isInstalled){
-        chrome.action.setBadgeText({ text: '⇲', tabId: tabId });
-        chrome.action.setBadgeBackgroundColor({ color: '#ebebeb', tabId: tabId });
-    } else {
-        chrome.action.setBadgeText({ text: '', tabId: tabId }); // Clear badge
-    }
+        if (isInstalled){
+            chrome.action.setBadgeText({ text: '⇲', tabId: tabId });
+            chrome.action.setBadgeBackgroundColor({ color: '#ebebeb', tabId: tabId });
+        } else {
+            chrome.action.setBadgeText({ text: '', tabId: tabId }); // Clear badge
+        }
+    }, null);
 }
 
 /**
@@ -318,53 +358,54 @@ async function handleTabUpdate(tabId, changeInfo, tab) {
 
 
 // --- Event Listeners ---
-chrome.tabs.onUpdated.addListener(handleTabUpdate);
-chrome.runtime.onStartup.addListener(getAndUpdateDpaList);
-chrome.runtime.onInstalled.addListener(getAndUpdateDpaList);
-chrome.alarms.create('refreshDpaList', { delayInMinutes: 1, periodInMinutes: CACHE_DURATION_MINUTES });
+runInExtensionContext(() => {
+    chrome.tabs.onUpdated.addListener(handleTabUpdate);
+    chrome.runtime.onStartup.addListener(getAndUpdateDpaList);
+    chrome.runtime.onInstalled.addListener(getAndUpdateDpaList);
+    chrome.alarms.create('refreshDpaList', { delayInMinutes: 1, periodInMinutes: CACHE_DURATION_MINUTES });
 
-function handleAlarm(alarm) {
-    if (alarm.name === 'refreshDpaList') {
-        console.log('Periodic alarm triggered. Refreshing DPA list.');
-        getAndUpdateDpaList();
+    function handleAlarm(alarm) {
+        if (alarm.name === 'refreshDpaList') {
+            console.log('Periodic alarm triggered. Refreshing DPA list.');
+            getAndUpdateDpaList();
+        }
     }
-}
-chrome.alarms.onAlarm.addListener(handleAlarm);
+    chrome.alarms.onAlarm.addListener(handleAlarm);
 
-// --- Message Listener for Popup ---
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "getSiteInfoForUrl") {
-        // This is an async wrapper to allow using await inside the listener
-        (async () => {
-            const domainInfo = getDomainInfo(request.url);
-            if (!domainInfo) {
-                sendResponse({ error: 'Invalid URL.' });
-                return;
-            }
+    // --- Message Listener for Popup ---
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        if (request.action === "getSiteInfoForUrl") {
+            (async () => {
+                const domainInfo = getDomainInfo(request.url);
+                if (!domainInfo) {
+                    sendResponse({ error: 'Invalid URL.' });
+                    return;
+                }
 
-            const { dpaList } = await chrome.storage.local.get('dpaList');
-            if (!dpaList) {
-                sendResponse({ error: 'DPA data not yet loaded.' });
-                return;
-            }
+                const { dpaList } = await chrome.storage.local.get('dpaList');
+                if (!dpaList) {
+                    sendResponse({ error: 'DPA data not yet loaded.' });
+                    return;
+                }
 
-            let siteInfo = null;
-            if (domainInfo.isInstalled){
-                siteInfo = dpaList.find(site => {
-                    const siteDomainInfo = getDomainInfo(site.resource_link);
-                    return siteDomainInfo && siteDomainInfo.isInstalled && siteDomainInfo.appID === domainInfo.appID;
-                });
-            } else if (!domainInfo.isAppStore) {
-                siteInfo = dpaList.find(site => {
-                    const siteDomainInfo = getDomainInfo(site.resource_link);
-                    return siteDomainInfo && !siteDomainInfo.isInstalled && siteDomainInfo.hostname === domainInfo.hostname;
-                });
-            }
+                let siteInfo = null;
+                if (domainInfo.isInstalled){
+                    siteInfo = dpaList.find(site => {
+                        const siteDomainInfo = getDomainInfo(site.resource_link);
+                        return siteDomainInfo && siteDomainInfo.isInstalled && siteDomainInfo.appID === domainInfo.appID;
+                    });
+                } else if (!domainInfo.isAppStore) {
+                    siteInfo = dpaList.find(site => {
+                        const siteDomainInfo = getDomainInfo(site.resource_link);
+                        return siteDomainInfo && !siteDomainInfo.isInstalled && siteDomainInfo.hostname === domainInfo.hostname;
+                    });
+                }
+                
+                const overallStatus = determineOverallStatus(siteInfo);
 
-            // Send the final data back to the popup
-            sendResponse({ siteInfo, domainInfo });
-        })();
-
-        return true; // Required to indicate you will send a response asynchronously
-    }
-});
+                sendResponse({ siteInfo, domainInfo, overallStatus });
+            })();
+            return true; 
+        }
+    });
+}, null);

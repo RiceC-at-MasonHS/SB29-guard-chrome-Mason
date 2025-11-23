@@ -1,29 +1,25 @@
 # Technical Plan: "SB29-guard-chrome"
 This document outlines the technical implementation details, feature set, and rollout strategy for the SB29 Guard Chrome Extension. For a high-level overview of the project's mission and goals, please see the main [README.md](../README.md).
 
-## 🛣️ Phased Rollout Plan
-We will develop this project in two distinct phases to prioritize a fast, secure initial deployment followed by a more robust, long-term architecture.
+## 🏛️ Architecture: Hybrid Authentication Model
+To ensure a secure and seamless experience for our teacher-only user base, we will use a hybrid authentication and authorization model. This approach uses native Chrome APIs for user authentication and a secret API key for application authorization, providing layered security without the need for a custom proxy service.
 
-### Version 1.0: Initial Private Release
-For the initial rollout within our district's managed Google Workspace, we will use a direct-to-API architecture.
+- **User Authentication:** The extension will use the `chrome.identity.getAuthToken()` API to request an OAuth2 token from Google. This verifies that the user is an authorized teacher logged into their district Google Workspace account, without the extension ever handling passwords.
 
-- **How it Works:** The extension will fetch data directly from the Supabase API. The required API key will be included in the packaged extension code. Ideally this is a dedicated, read-only API Key that does not allow users to muddle with the data. 
+- **Application Authorization:** The extension will make all requests to the Supabase database using a secure, read-only API key. To protect this key, it is **not** stored in the public repository. Instead, it is injected into the extension's code at build time from a local, git-ignored `config.js` file.
 
-- **API Key Security:** To keep the key out of the public GitHub repository, it will be handled via a build-time injection. The key will be stored in a local, git-ignored file (e.g., `config.js`). A simple build script will read this key and insert it into the final JavaScript file before the extension is packaged for upload. This is a safe and acceptable tradeoff for a private, force-installed extension. Doubly so if the API Key is guarded to be read-only. 
+- **URL Whitelisting for Authentication:** The `chrome.identity` flow requires a one-time configuration in Supabase to add the extension's unique redirect URL to the approved list. This ensures that only the official Chrome Extension can initiate the user authentication flow. The URL format is `https://<EXTENSION_ID>.chromiumapp.org`.
 
-### Version 2.0: Enhanced Security & Scalability -- Optional Advancement
-For long-term stability and security, we will introduce a secure proxy model.
+### The "Store-First" Workflow
+To ensure a stable and predictable Extension ID for whitelisting, we will follow the "Store-First" workflow:
+1.  **Reserve the ID:** An initial version of the extension is uploaded to the Chrome Web Store Developer Dashboard to reserve a permanent, fixed ID.
+2.  **Whitelist the ID:** This permanent ID is used to construct the redirect URL (`https://<ID>.chromiumapp.org`), which is then added to the Supabase URL Configuration.
+3.  **Test & Deploy:** All subsequent release builds (`release.zip`) must be uploaded to the Web Store as a draft or test release. Sideloading the extension will generate a random, temporary ID that will not be recognized by Supabase, causing the user authentication to fail.
 
-- **How it Works:** The extension will call a trusted intermediary endpoint hosted by the school. This proxy will be the only service that holds the Supabase API key. It will also be able to minimize the data that is transmitted to end-users devices. 
+## ✅ Feature Set
+Our launch-ready version must do the following:
 
-- **Technology:** The proxy will be a lightweight, high-performance binary (written in Go) hosted on a school subdomain. This completely decouples the extension from the secret key, making the system more robust and scalable.
-
-- **Centralized Configuration:** The proxy will not only serve DPA data but also provide configuration details, such as the base URL for the "View Full Details" link in the popup. This allows us to update key settings centrally without having to republish the extension.
-
-## ✅ Feature Set: MVP (Version 1.0)
-Our first launch-ready version must do the following:
-
-- **Direct API Fetch:** The background script must successfully fetch and parse data from the Supabase API endpoint.
+- **Authenticated API Fetch:** The background script must successfully authenticate the user via `chrome.identity` and then fetch data from the Supabase API endpoint using the injected API key.
 
 - **Background URL Monitoring:** The `background.js` script must successfully listen for tab updates and extract the hostname from the current URL.
 
@@ -59,24 +55,18 @@ Our first launch-ready version must do the following:
   - **Applications:** When a user is viewing a specific application page within an app store, the extension will identify the application's unique ID from the URL path or query parameters and use that for matching. This ensures that individual apps have their own distinct DPA status.
 
 ## 💻 Tech Stack & Repo Structure
-- **Extension Code (V1):** Vanilla JavaScript, HTML, CSS.
-
-- **Build Tooling (V1):** A simple build script (e.g., a shell script or a Node.js file) to manage the API key injection and package the extension into a `.zip` file.
-
-- **Proxy Service (V2):** Go.
-
-- **APIs:** Chrome Extension APIs (`Manifest V3`, `chrome.storage`, `chrome.tabs`, `chrome.action`).
+- **Extension Code:** Vanilla JavaScript, HTML, CSS.
+- **Build Tooling:** A Node.js script (`build.mjs`) to manage secret injection (API Key, OAuth Client ID) and package the extension.
+- **APIs:** Chrome Extension APIs (`Manifest V3`, `chrome.storage`, `chrome.tabs`, `chrome.action`, `chrome.identity`).
 
 - **Repo:** This is a monorepo containing:
 
 - `/extension`: All source code for the extension.
 
-- `/proxy-go` (for V2): The code for our secure Go proxy service.
-
 - `/docs`: Public-facing static files, primarily the `index.html` which serves as our Privacy Policy.
 
 ## 🏁 Definition of Done
-Version 1.0 is "done" when a teacher can navigate to a website, see the extension icon change correctly, and click it for details that link back to the official App Hub. The extension must pass the Chrome Web Store review for a private extension, with a clear privacy policy hosted on our GitHub Pages site.
+The project is "done" when a teacher can navigate to a website, see the extension icon change correctly, and click it for details that link back to the official App Hub. The extension must pass the Chrome Web Store review for a private extension, with a clear privacy policy hosted on our GitHub Pages site.
 
 ---------
 ## 💡 Future Extensions & Considerations
