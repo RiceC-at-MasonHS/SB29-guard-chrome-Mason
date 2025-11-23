@@ -1,0 +1,29 @@
+# This workflow ensures that all tests pass before a pull request can be merged into the main branch.
+# It provides a critical quality gate for your project.
+
+name: Run Tests on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main # This workflow only runs on PRs targeting the 'main' branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js and npm
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.20.0' # Specify the exact Node.js version
+          cache: 'npm' # Cache dependencies to speed up the process
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run test suite
+        run: npm test
+

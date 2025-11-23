@@ -1,0 +1,54 @@
+# This workflow automates the process of building, testing, and releasing the Chrome extension.
+# It is triggered automatically whenever a new version tag (e.g., v1.0.1) is pushed to the repository.
+
+name: Build, Test, and Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*' # Run workflow on version tags like v1.0, v1.1.0, etc.
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.20.0' # Specify the exact Node.js version
+          cache: 'npm' # Cache npm dependencies to speed up future builds
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run test suite
+        run: npm test # CRITICAL: This step ensures no release is created if tests fail.
+
+      - name: Create config.js from secrets
+        # This step securely creates the configuration file needed for the build.
+        # Ensure you have SUPABASE_API_KEY, SUPABASE_API_URI, and SUPABASE_API_HOST set in your repository's secrets.
+        run: |
+          echo "export default { API_KEY: '${{ secrets.SUPABASE_API_KEY }}', API_URI: '${{ secrets.SUPABASE_API_URI }}', API_HOST: '${{ secrets.SUPABASE_API_HOST }}' };" > config.js
+
+      - name: Build the extension
+        # Uses the build script defined in package.json to create the production-ready extension in the /build directory
+        run: npm run build
+
+      - name: Package the extension
+        # Zips the contents of the /build directory into a release-ready file.
+        run: |
+          cd build
+          zip -r ../release.zip .
+
+      - name: Create GitHub Release
+        # This action creates a new release on GitHub, using the tag as the release name
+        # and attaching the release.zip file as an artifact.
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release.zip
+          fail_on_unmatched_files: true
+          name: Release ${{ github.ref_name }}
+          body: "Official release of version ${{ github.ref_name }}. The packaged extension is attached below."
