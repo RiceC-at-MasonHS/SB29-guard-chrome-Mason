@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "<% name %>",
+  "version": "<% version %>",
+  "description": "<% description %>",
+  "permissions": [
+    "storage",
+    "tabs",
+    "alarms", 
+    "identity"
+  ],
+  "host_permissions": [
+    "__API_HOST_PLACEHOLDER__"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon-neutral16.png",
+      "48": "images/icon-neutral48.png"
+    },
+    "default_title": "<% name %>"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "images/icon-neutral16.png",
+    "48": "images/icon-neutral48.png",
+    "128": "images/icon-neutral128.png"
+  }
+}

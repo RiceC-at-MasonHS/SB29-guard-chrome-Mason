@@ -1,0 +1,47 @@
+# All possible states within the JSON data.
+#  | current_tl_status | current_dpa_status |
+#  |-------------------|--------------------|
+#  | Pending           | Requested          |
+#  | Approved          | Received           |
+#  | Rejected          | Denied             |
+#  | Not Required      | Not Required       |
+#  | (blank)           | (blank)            |
+#  |-------------------|--------------------|
+# The 'resource_link' can be populated or left (blank).
+#
+# state-combos are listed as: [current_tl_status, current_dpa_status, resource_link]
+# in the state-combos, the wildcard '*' means all states in that list-position
+case:
+  - approved:
+      path: "images/icon-green-circle.png"
+      state-combos:
+        - ["Approved", "Recieved", "url_known"]
+        - ["Approved", "Not Required", "url_known"]
+        - ["Not Required", "Received", "url_known"]
+        - ["Not Required", "Not Required", "url_known"]
+  - denied:
+      path: "images/icon-red-x.png"
+      state-combos:
+        - ["Rejected", "*", "url_known"] # counts as 5ish
+  - staff_only:
+      path: "images/icon-yellow-triangle.png"
+      state-combos:
+        - ["*", "Denied", "url_known"] # counts as 5ish
+  - pending:
+      path: "images/icon-orange-square.png"
+      state-combos:
+        - ["Approved", "Requested", "url_known"]
+        - ["Approved", "(blank)", "url_known"]
+        - ["Not Required", "Requested", "url_known"]
+        - ["Not Required", "(blank)", "url_known"]
+        - ["Pending", "*", "url_known"] # counts as 5ish
+        - ["(blank)", "*", "url_known"] # counts as 5ish
+  - unlisted:
+      path: "images/icon-purple-diamond.png"
+      state-combos:
+        - ["*", "*", "url_unknown"] # counts as 25
+  - default:
+      path:
+        - "images/icon-neutral16.png"
+        - "images/icon-neutral48.png"
+        - "images/icon-neutral128.png"

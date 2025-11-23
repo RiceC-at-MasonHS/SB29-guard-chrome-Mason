@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DPA Status</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            width: 280px;
+            background-color: #f0f2f5;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #card-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        #status-text {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+            color: #333;
+        }
+        .content {
+            padding: 12px 16px 4px 16px;
+        }
+        .content p {
+            margin: 4px 0;
+            font-size: 14px;
+            color: #555;
+        }
+        .button {
+            display: block;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+            margin-top: 12px;
+            transition: background-color 0.2s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        #disclaimer {
+            font-size: 0.7rem; /* Increased size slightly for readability */
+            color: #606060;
+            line-height: 1.25; /* Improved line spacing */
+            text-align: center;
+        }
+        /* Styling for all links within the disclaimer */
+        #disclaimer a,
+        #disclaimer a:visited,
+        #disclaimer a:active {
+            color: #606060; /* Match the text color */
+            text-decoration: underline;
+            transition: opacity 0.2s ease-in-out;
+        }
+        /* Styling for link hover state */
+        #disclaimer a:hover {
+            opacity: 0.7; /* Fade slightly for hover feedback */
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div id="card-header">
+            <h3 id="status-text">Checking...</h3>
+        </div>
+        <div class="content">
+            <p id="tl-status"></p>
+            <p id="dpa-status"></p>
+            <p id="is-app-text"></p>
+            <!-- This link is now always visible and points to the main App Hub site -->
+            <a href="https://www.mcsapphub.com" id="details-link" class="button" target="_blank" rel="noopener noreferrer">View Details on MCS App Hub</a>
+            <!-- A basic disclaimer and more resources to help users understand context -->
+            <p id="disclaimer">Don’t share <a href="https://csrc.nist.gov/glossary/term/PII" target="_blank">PII</a> or violate <a href="https://studentprivacy.ed.gov/ferpa" target="_blank">FERPA</a> | <a href="https://github.com/RiceC-at-MasonHS/SB29-guard-chrome/blob/main/LICENSE" target="_blank">GNU GPL 3.0</a></p>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>

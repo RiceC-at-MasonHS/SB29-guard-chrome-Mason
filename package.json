@@ -1,0 +1,15 @@
+{
+  "name": "sb29-guard",
+  "displayName": "SB29 Guard",
+  "version": "0.1.0",
+  "description": "Checks the DPA status of the current website against district records. ☄️♥️ Made by a Mason teacher, for Mason teachers + students.",
+  "scripts": {
+    "test": "jest",
+    "build": "node build-manifest.js"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1",
+    "jest-chrome": "^0.8.0",
+    "jest-environment-jsdom": "^27.5.1"
+  }
+}

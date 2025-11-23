@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SB29 Guard - Extension Test Page</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        h1, h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+        h1 {
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            background-color: #fdfdfd;
+            border: 1px solid #eee;
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.75rem;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+        li:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .expectation {
+            /* font-style: italic; */
+            color: #555;
+            background-color: #e9ecef;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.9em;
+            text-align: center;
+            min-width: 120px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .expectation img {
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        .instructions {
+            background-color: #fffbe6;
+            border: 1px solid #ffe58f;
+            padding: 1rem 1.5rem;
+            border-radius: 6px;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Extension Behavior Test Page</h1>
+
+        <div class="instructions">
+            <p>Use this page to verify that the SB29 Guard extension is working correctly. Click on each link below, which will open in a new tab. Check that the extension icon in your browser toolbar changes to match the "Expected Icon" described.</p>
+            <p>The data used to make this list was accurate as of November 8th, 2025 and data/status may have changed in the primary database since then for any 'pending' items.</p>
+        </div>
+
+        <h2>Known District Resources</h2>
+        <p>These links are for sites that are in the district's DPA list. The extension should recognize their root domain and display the appropriate status.</p>
+        <ul>
+            <li>
+                <a href="https://www.khanacademy.org/" target="_blank" rel="noopener noreferrer">Khan Academy</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-green-circle.png" alt="Approved" width="20" height="20"> Approved</span>
+            </li>
+            <li>
+                <a href="https://www.tinkercad.com/" target="_blank" rel="noopener noreferrer">Tinkercad</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-green-circle.png" alt="Approved" width="20" height="20"> Approved</span>
+            </li>
+            <li>
+                <a href="https://www.schoology.com/" target="_blank" rel="noopener noreferrer">Schoology</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-green-circle.png" alt="Approved" width="20" height="20"> Approved</span>
+            </li>
+            <li>
+                <a href="https://www.icivics.org/" target="_blank" rel="noopener noreferrer">iCivics</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-green-circle.png" alt="Approved" width="20" height="20"> Approved</span>
+            </li>
+            <li>
+                <a href="https://www.spellingstars.com/" target="_blank" rel="noopener noreferrer">Spelling Stars</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-orange-square.png" alt="Pending" width="20" height="20"> Pending</span>
+            </li>
+            <li>
+                <a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-orange-square.png" alt="Pending" width="20" height="20"> Pending</span>
+            </li>
+            <li>
+                <a href="https://www.classdojo.com/" target="_blank" rel="noopener noreferrer">ClassDojo</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-red-x.png" alt="Denied" width="20" height="20"> Denied</span>
+            </li>
+            <li>
+                <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-red-x.png" alt="Denied" width="20" height="20"> Denied</span>
+            </li>
+            <li>
+                <a href="https://www.kroger.com/" target="_blank" rel="noopener noreferrer">Kroger</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-yellow-triangle.png" alt="Staff Only" width="20" height="20"> Staff Only</span>
+            </li>
+             <li>
+                <a href="https://www.busuu.com/en-US" target="_blank" rel="noopener noreferrer">Busuu</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-yellow-triangle.png" alt="Staff Only" width="20" height="20"> Staff Only</span>
+            </li>
+            <li>
+                <a href="https://www.easycbm.com/" target="_blank" rel="noopener noreferrer">Easy CBM</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-yellow-triangle.png" alt="Staff Only" width="20" height="20"> Staff Only</span>
+            </li>
+            <li>
+                <a href="https://musescore.com/" target="_blank" rel="noopener noreferrer">Musescore</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-yellow-triangle.png" alt="Staff Only" width="20" height="20"> Staff Only</span>
+            </li>
+        </ul>
+
+        <h2>App Store Pages</h2>
+        <p>These links go directly to app store pages. The extension should identify them as "installed" apps and show the badge, in addition to their DPA status.</p>
+        <ul>
+            <li>
+                <a href="https://apps.apple.com/us/app/letterschool-learn-to-write/id481067676" target="_blank" rel="noopener noreferrer">LetterSchool (Apple)</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-green-circle.png" alt="Approved" width="20" height="20"> Approved + Badge</span>
+            </li>
+            <li>
+                <a href="https://apps.apple.com/us/app/chatterpix-kids/id734046126" target="_blank" rel="noopener noreferrer">Chatterpix Kids (Apple)</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-orange-square.png" alt="Pending" width="20" height="20"> Pending + Badge</span>
+            </li>
+            <li>
+                <a href="https://workspace.google.com/marketplace/app/compare_sheets/955024524750" target="_blank" rel="noopener noreferrer">Compare Sheets (Google Workspace)</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-orange-square.png" alt="Pending" width="20" height="20"> Pending + Badge</span>
+            </li>
+             <li>
+                <a href="https://workspace.google.com/marketplace/app/sketchup_for_schools/260457348581" target="_blank" rel="noopener noreferrer">Sketchup for Schools (Google Workspace)</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-purple-diamond.png" alt="Unlisted" width="20" height="20"> Unlisted + Badge</span>
+            </li>
+            <li>
+                <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.classroom" target="_blank" rel="noopener noreferrer">Google Classroom (Google Play)</a>
+                 <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-green-circle.png" alt="Approved" width="20" height="20"> Approved + Badge</span>
+            </li>
+            <li>
+                <a href="https://play.google.com/store/apps/details?id=com.microsoft.teams" target="_blank" rel="noopener noreferrer">Microsoft Teams (Google Play)</a>
+                 <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-purple-diamond.png" alt="Unlisted" width="20" height="20"> Unlisted + Badge</span>
+            </li>
+            <li>
+                <a href="https://chromewebstore.google.com/detail/grammarly-grammar-checke/kbfnbcaeplbcioakkpcpgfkobkghlhen" target="_blank" rel="noopener noreferrer">Grammarly (Chrome Web Store)</a>
+                 <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-green-circle.png" alt="Approved" width="20" height="20"> Approved + Badge</span>
+            </li>
+            <li>
+                <a href="https://chromewebstore.google.com/detail/notion-web-clipper/knheggckgoiihginacbkhaalnibhilkk" target="_blank" rel="noopener noreferrer">Notion Web Clipper (Chrome Web Store)</a>
+                 <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-purple-diamond.png" alt="Unlisted" width="20" height="20"> Unlisted + Badge</span>
+            </li>
+        </ul>
+
+        <h2>Unlisted Resources</h2>
+        <p>These links are for sites not expected to be in the district's DPA list. The extension should show the "unlisted" status.</p>
+        <ul>
+            <li>
+                <a href="https://www.wikipedia.org/" target="_blank" rel="noopener noreferrer">Wikipedia</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-purple-diamond.png" alt="Unlisted" width="20" height="20"> Unlisted</span>
+            </li>
+            <li>
+                <a href="https://www.nytimes.com/" target="_blank" rel="noopener noreferrer">The New York Times</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-purple-diamond.png" alt="Unlisted" width="20" height="20"> Unlisted</span>
+            </li>
+             <li>
+                <a href="https://www.reddit.com/" target="_blank" rel="noopener noreferrer">Reddit</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-purple-diamond.png" alt="Unlisted" width="20" height="20"> Unlisted</span>
+            </li>
+            <li>
+                <a href="https://www.amazon.com/" target="_blank" rel="noopener noreferrer">Amazon</a>
+                <span class="expectation"><img src="https://raw.githubusercontent.com/RiceC-at-MasonHS/SB29-guard-chrome/refs/heads/main/extension/images/icon-purple-diamond.png" alt="Unlisted" width="20" height="20"> Unlisted</span>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

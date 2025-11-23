@@ -1,0 +1,18 @@
+# secrets in JS are a bit different
+config.js
+!example_config.js
+
+# all the local build output
+/build
+
+# example json output
+resp.json
+
+#Node dependencies
+node_modules/
+
+#Build artifacts (we only commit the template)
+manifest.json
+
+# Jest cache
+.jest-cache
