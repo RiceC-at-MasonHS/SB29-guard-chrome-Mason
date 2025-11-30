@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 // --- Configuration ---
-const configPath = './config.js';
+const configPath = './config.mjs';
 const sourceDir = 'extension'; // Assumes your source files are in /extension
 const buildDir = 'build';
 
@@ -17,17 +17,17 @@ const packageJson = readJsonFile('./package.json');
 async function build() {
     console.log('🚀 Starting extension build process...');
 
-    // 1. Load secrets from config.js
+    // 1. Load secrets from config.mjs
     if (!fs.existsSync(configPath)) {
         console.error(`🔴 Error: Configuration file not found at ${configPath}`);
-        console.error(`   - Please create a 'config.js' file based on 'example_config.js'`);
+        console.error(`   - Please create a 'config.mjs' file based on 'example_config.mjs'`);
         process.exit(1);
     }
     const config = await import(configPath);
     const { OAUTH2_CLIENT_ID, API_KEY, API_URI, API_HOST } = config.default;
 
     if (!OAUTH2_CLIENT_ID || !API_KEY || !API_URI || !API_HOST) {
-        console.error('🔴 Error: Required values (OAUTH2_CLIENT_ID, API_KEY, API_URI, API_HOST) are missing from config.js.');
+        console.error('🔴 Error: Required values (OAUTH2_CLIENT_ID, API_KEY, API_URI, API_HOST) are missing from config.mjs.');
         process.exit(1);
     }
 
@@ -76,6 +76,7 @@ async function build() {
             let content = fs.readFileSync(sourcePath, 'utf8');
             content = content.replace(/__API_KEY_PLACEHOLDER__/g, API_KEY);
             content = content.replace(/__API_URI_PLACEHOLDER__/g, API_URI);
+            content = content.replace(/__API_HOST_PLACEHOLDER__/g, API_HOST);
             fs.writeFileSync(destPath, content);
         } else {
             fs.copyFileSync(sourcePath, destPath);

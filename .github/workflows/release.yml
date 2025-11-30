@@ -27,11 +27,11 @@ jobs:
       - name: Run test suite
         run: npm test # CRITICAL: This step ensures no release is created if tests fail.
 
-      - name: Create config.js from secrets
+      - name: Create config.mjs from secrets
         # This step securely creates the configuration file needed for the build.
-        # Ensure you have SUPABASE_API_KEY, SUPABASE_API_URI, and SUPABASE_API_HOST set in your repository's secrets.
+        # Ensure you have OAUTH2_CLIENT_ID, SUPABASE_API_KEY, SUPABASE_API_URI, and SUPABASE_API_HOST set in your repository's secrets.
         run: |
-          echo "export default { API_KEY: '${{ secrets.SUPABASE_API_KEY }}', API_URI: '${{ secrets.SUPABASE_API_URI }}', API_HOST: '${{ secrets.SUPABASE_API_HOST }}' };" > config.js
+          echo "export default { OAUTH2_CLIENT_ID: '${{ secrets.OAUTH2_CLIENT_ID }}', API_KEY: '${{ secrets.SUPABASE_API_KEY }}', API_URI: '${{ secrets.SUPABASE_API_URI }}', API_HOST: '${{ secrets.SUPABASE_API_HOST }}' };" > config.mjs
 
       - name: Build the extension
         # Uses the build script defined in package.json to create the production-ready extension in the /build directory

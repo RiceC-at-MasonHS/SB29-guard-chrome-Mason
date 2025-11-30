@@ -1,11 +1,11 @@
 {
   "name": "sb29-guard",
-  "displayName": "SB29 Guard",
+  "displayName": "MasonCSD SB29 Guard",
   "version": "0.1.0",
-  "description": "Checks the DPA status of the current website against district records. ☄️♥️ Made by a Mason teacher, for Mason teachers + students.",
+  "description": "Checks the DPA status of the current website against district records. ☄️ By a Mason teacher, for Mason comets.",
   "scripts": {
     "test": "jest",
-    "build": "node build-manifest.js"
+    "build": "node build.mjs"
   },
   "devDependencies": {
     "jest": "^27.5.1",
