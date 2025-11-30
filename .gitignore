@@ -1,6 +1,6 @@
-# secrets in JS are a bit different
-config.js
-!example_config.js
+# secrets in mjs are a bit different
+config.mjs
+!example_config.mjs
 
 # all the local build output
 /build
